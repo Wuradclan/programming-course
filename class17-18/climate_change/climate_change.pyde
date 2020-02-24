@@ -5,27 +5,75 @@ background_color = 32
 text_color = 255
 
 def setup():
+    global lstheader
+    
     global columns
+    global lstheader
+    global colname
+    colname = 'cold_days'
+    
+    lstheader = []
     file = open("data/aggregate_montreal_climate.csv", 'r')
     reader = csv.reader(file, quoting=csv.QUOTE_NONNUMERIC)
     header = reader.next()
     columns = {}
     for colname in header:
         columns[colname] = []
+        lstheader.append(colname)
     print(header)
     for row in reader:
         for i in range(len(row)):
             columns[header[i]].append(row[i])
     file.close()
-    size(800, 800)
+    size(1000, 1000)
+    
     background(background_color)
     
+
+    #global columns
+        
+    
+
+    if len(lstheader)!=0:
+        for i in range(3):
+            lstheader.pop(0)
+        # lstheader.pop(0)
+        # lstheader.pop(0)
+        # lstheader.pop(0)
+    print(lstheader)
+    print(colname)
+    
+def buttons():
+    global colname
+    
+    global bcolor
+    bcolor="250"
+    textSize(14)    
+    for i in range(len(lstheader)):
+        fill(250, 250, 250)
+        rect(i*110+30,height-45,100,30,7) 
+        fill(bcolor)
+        textAlign(LEFT)  
+        text(lstheader[i], i*110+45, height-25)
+        if mousePressed and mouseButton == LEFT and  mouseX>i*110+30 and mouseX<i*110+30+100 and mouseY>height-45 and mouseY<height-45+50:
+            colname = lstheader[i]
+            bcolor = "0"
+            fill(245, 161, 66)
+            rect(i*110+30,height-45,100,30,7)
+            fill(250,250,0)
+            text(lstheader[i], i*110+45, height-25)
+        
+    #print(colname) 
+             
+
+       
 def draw():
     global columns
+    global colname
     
     idx = frameCount % len(columns['year'])
     if idx == 0:
-        background
+        background(0)
         return
     
     noStroke()
@@ -38,10 +86,12 @@ def draw():
     pushMatrix()
     translate(0, height)
     scale(1, -1)
-    translate(width * .05, width * .05)
-    scale(.9, .9)
+    translate(width * .05, width * 0.1)
+    scale(.9, .8)
     
-    colname = 'cold_days'
+    
+    #colname = 'cold_days'
+    
     the_col = columns[colname]
     bottom_range = min(the_col)
     top_range = max(the_col)
@@ -71,8 +121,10 @@ def draw():
     textSize(30)
     textAlign(CENTER)
     fill(background_color)
-    rect(0, height - 50, width, 50)
+    
+    rect(0, height - 80, width, 35)
     fill(text_color)
-    text(int(columns['year'][idx]), width / 2, height - 20)
+    text(int(columns['year'][idx]), width / 2, height - 50)
     textAlign(CENTER)
-    text(colname, width/2, 30)
+    text(colname, width/2, 20)
+    buttons()
